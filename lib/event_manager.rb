@@ -23,27 +23,24 @@ def clean_phone_number(phone_number)
   end
 end
 
-def get_peak_hour(contents)
+def get_peak_hour(reg_dates)
   hours = {}
   hours.default = 0
-  contents.each do |row|
-    reg_date = row[:regdate]
+  reg_dates.each do |reg_date|
     reg_hour = Time.strptime(reg_date, "%m/%d/%Y %k:%M").hour
     hours[reg_hour]+=1
   end
   hours.select {|k,v| v == hours.values.max}.keys
 end
 
-def get_peak_day(contents)
+def get_peak_day(reg_dates)
   day_of_the_week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   day_count = {}
   day_count.default = 0
-  contents.each do |row|
-    reg_date = row[:regdate]
+  reg_dates.each do |reg_date|
     reg_day = Time.strptime(reg_date, "%m/%d/%Y %k:%M").wday
     day_count[reg_day]+=1
   end
-  p day_count
   day_count.select{|k,v| v == day_count.values.max}.keys.map{|key| day_of_the_week[key]}
 end
 
@@ -83,15 +80,19 @@ contents = CSV.open(
 
 template_letter = File.read('form_letter.erb')
 erb_template = ERB.new template_letter
+reg_dates = []
 
-# contents.each do |row|
-#   id = row[0]
-#   name = row[:first_name]
-#   zipcode = clean_zipcode(row[:zipcode])
-#   legislators = legislators_by_zipcode(zipcode)
-#   phone_number = clean_phone_number(row[:homephone])
-# end
+contents.each do |row|
+  id = row[0]
+  name = row[:first_name]
+  zipcode = clean_zipcode(row[:zipcode])
+  legislators = legislators_by_zipcode(zipcode)
+  phone_number = clean_phone_number(row[:homephone])
 
-# p get_peak_hour(contents)
-p get_peak_day(contents)
+  p "#{name} #{zipcode} #{phone_number}"
+  reg_dates << row[:regdate]
+end
+
+p "The peak hours are: #{get_peak_hour(reg_dates).join(' ')}"
+p "The peak days are: #{get_peak_day(reg_dates).join(' ')}"
 
