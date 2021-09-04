@@ -1,0 +1,2 @@
+# Event Manager
+A mini project for The Odin Project's Full Stack Ruby On Rails path Ruby Programming section where we will build an event manager where the data of the attendees will be accessed from a csv file. Other than that we will also use the google civic api client to get the representatives of the attendees based on their address. There are also assignments that must be done after the tutorial. 
